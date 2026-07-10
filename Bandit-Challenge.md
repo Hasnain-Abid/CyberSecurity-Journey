@@ -63,3 +63,58 @@ In cybersecurity, most servers do not have a visual desktop. You have to type co
     file ./*
     cat ./-file07
 **Password Found:** `6C7h9GD8M6ai5nr7wo1RonrzFjj9yIrG`
+
+### Level 5 -> Level 6: Using Advanced Filtering
+* **Goal:** Find a specific file hidden deep inside many folders that is exactly 1033 bytes big and not executable.
+* **What I did:** I used the `find` command with flags to search for files (`-type f`), specific sizes (`-size 1033c`), and left out executable choices (`! -executable`).
+* **Commands I used:**
+    ```bash
+    find . -type f -size 1033c ! -executable
+    cat ./maybehere07/.file2
+    ```
+* **Password Found:** `pXa26xhMWaC2SvDotA4r9EgZkulOeSBW`
+
+---
+
+### Level 6 -> Level 7: Searching the Entire System
+* **Goal:** Find a file belonging to user `bandit7` and group `bandit6` that is exactly 33 bytes big.
+* **What I did:** I searched from the absolute root directory (`/`). I added `2>/dev/null` at the end of my command to hide all the "Permission Denied" errors, leaving only the successful file match on my screen.
+* **Commands I used:**
+    ```bash
+    find / -user bandit7 -group bandit6 -size 33c 2>/dev/null
+    cat /var/lib/dpkg/info/bandit7.password
+    ```
+* **Password Found:** `Bmnnvf82KzQlfxgAI2d1zYbr1u9pr3E3`
+
+---
+
+### Level 7 -> Level 8: Finding a Word in a Sea of Text
+* **Goal:** Extract the password inside a huge text file called `data.txt` right next to the word "millionth".
+* **What I did:** Instead of scrolling through thousands of lines, I used `grep` to scan the file and pull out only the line containing "millionth".
+* **Commands I used:**
+    ```bash
+    grep "millionth" data.txt
+    ```
+* **Password Found:** `VR1ljMayciFxbnUokuQmJFw6QC9VKtub`
+
+---
+
+### Level 8 -> Level 9: Sorting and Dropping Duplicates
+* **Goal:** Find the only line of text in `data.txt` that occurs exactly once. All other lines are duplicates.
+* **What I did:** The `uniq` command only works if identical lines are touching. So, I first used `sort` to line up all duplicate text rows together, and then piped (`|`) that text into `uniq -u` to delete all repeating data.
+* **Commands I used:**
+    ```bash
+    sort data.txt | uniq -u
+    ```
+* **Password Found:** `EjmOSvuAu7sGAHqHVcBDPirRe9T03kxl`
+
+---
+
+### Level 9 -> Level 10: Extracting Readable Strings
+* **Goal:** Read a password hidden inside a corrupted, unreadable binary file.
+* **What I did:** Running `cat` on a binary file floods the screen with broken symbols. I used the `strings` tool to extract only the human-readable text parts, then used `grep` to look for the password lines starting with multiple `=` marks.
+* **Commands I used:**
+    ```bash
+    strings data.txt | grep "===="
+    ```
+* **Password Found:** `B0s2khmbT9u0geKuOoVGW3JZKhndE3BG`
