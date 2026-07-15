@@ -1,123 +1,53 @@
-# My Learning Report: Navigating Linux and Finding Files
-Platform:OverTheWire (Bandit Game)  
-Objective:Learn how to use basic Linux commands to move around a system, find hidden files, and read information without using a mouse.
-
-**What I Learned (Core Concepts)**
-In cybersecurity, most servers do not have a visual desktop. You have to type commands to do everything. This project taught me how to talk to a Linux computer using text.
-
-# Important Skills Learned:
-**Moving Around:** How to change folders and check where I am standing.
-**Fixing Broken Names:** How to open files that have strange names (like spaces or dashes) that usually confuse the computer.
-**Finding Hidden Items:** How to see files that the computer tries to hide.
-**Checking File Types:** How to ask the computer if a file contains readable text or unreadable computer code.
+# My Learning Report: Navigating Linux, Networking, and Git Security
+**Platform:** OverTheWire (Bandit Game, Levels 0 to 33 - COMPLETE)  
+**Objective:** Learn how to use basic to intermediate Linux commands to move around a system, find hidden data, interact with network lines, and check Git files.
 
 ---
 
-# Step-by-Step Walkthrough
+## What I Learned (Core Concepts)
 
-# Level 0 -> Level 1: Logging In and Looking Around
-**Goal:** Log into the remote computer and find the first password.
-**What I did:** I used the `ssh` command to connect to the game server. Then I checked my location, looked at the files, and read the "readme" file.
-**Commands I used:**
-    ssh bandit0@bandit.labs.overthewire.org -p 2220
-    pwd
-    ls
-    cat readme
- **Password Found:** `6y2kwnwK6grgvwvpvLaa2T1cpFEKOhNR`
+In cybersecurity, most servers do not have a visual desktop. You have to type commands to do everything. This project taught me how to find information quickly across a massive system.
 
-
-# Level 1 -> Level 2: Reading a Dash File
-**Goal:** Read a file whose name is just a single dash `-`.
-**What I did:** Usually, a dash means a command option, which confuses Linux. To fix this, I added `./` in front of the dash (`./-`). This tells the computer: "Look inside this current folder for a file named dash."
-**Commands I used:**
-    ls
-    cat ./-
-**Password Found:** `PK8fYLZg2hnHSz83plBL1iEPKdD3QToB`
+### Important Skills Learned:
+* **Advanced File Searching:** How to search the entire computer for a file based on its exact size, owner, or folder permissions.
+* **Error Hiding:** How to use `2>/dev/null` to hide annoying "Permission Denied" text errors so they do not clutter the screen.
+* **Text Filtering (`grep`):** How to extract a single specific word out of a file containing thousands of sentences.
+* **Finding Unique Data:** How to sort text files and delete matching duplicate lines to isolate a single unique secret.
+* **Inspecting Binary Files:** Using `strings` to see human-readable words hidden inside raw machine code files.
+* **Data Coding & Ciphers:** Unpacking encoded Base64 strings and solving character-shifted text layouts like ROT13.
+* **Archive Extraction Loops:** Peeling back nested layers of compression types like `gzip`, `bzip2`, and `tar`.
+* **Network Communications:** Checking server ports using `nmap`, sending unencrypted lines using Netcat (`nc`), and using OpenSSL for encrypted communication.
+* **Task Automation:** Auditing scheduled system background processes (Cron jobs) and handling automation using bash scripts.
+* **Git Code Databases:** Recovering deleted history tracking data via `git log`, checking alternative development branches, and inspecting code labels (Git tags).
+* **Shell Escaping:** Outsmarting locked-down user shell profiles to drop back into standard default command lines.
 
 ---
 
-# Level 2 -> Level 3: Reading Files with Spaces
-**Goal:** Open a file that has spaces in its name (`spaces in this filename`).
-**What I did:** Linux gets confused by spaces because it thinks they are separate commands. I used a backslash `\` before each space to tell the computer that the whole line is just one single filename.
-**Commands I used:**
-    ls
-    cat ./--spaces\ in\ this\ filename--
-**Password Found:** `7ZZ2LFrykP2zEyvBl4m3clcL7tGYJPME`
+## Step-by-Step Walkthrough
+
+### Level 0 -> Level 5: Basic File Handling & Navigation Oddities
+* **What I did:** Learned standard command navigation. Handled strange file names with relative pathing (`./-`), escaped spaces with backslashes (`\ `), exposed unindexed configurations (`ls -a`), and verified file identities via signature byte lookups (`file`).
+* **Passwords Tracker:**
+  * Level 1: `6y2kwnwK6grgvwvpvLaa2T1cpFEKOhNR`
+  * Level 2: `PK8fYLZg2hnHSz83plBL1iEPKdD3QToB`
+  * Level 3: `7ZZ2LFrykP2zEyvBl4m3clcL7tGYJPME`
+  * Level 4: `xzTXq1rDJQVVAzdv5cHq1TQytTWufAMq`
+  * Level 5: `6C7h9GD8M6ai5nr7wo1RonrzFjj9yIrG`
 
 ---
 
-### Level 3 -> Level 4: Finding Hidden Files
-**Goal:** Find a file hidden inside a folder called `inhere`.
-**What I did:** I moved into the folder using `cd`. When I typed `ls`, nothing showed up. I used `ls -la` to show hidden files, and found a file starting with dots.
-**Commands I used:**
-    cd inhere/
-    ls -a
-    cat ...Hiding-From-You
-**Password Found:** `xzTXq1rDJQVVAzdv5cHq1TQytTWufAMq`
-
-# Level 4 -> Level 5: Finding the Only Readable File
-**Goal:** Find the one readable text file inside a folder full of unreadable computer files.
-**What I did:** There were 10 files. Instead of opening all of them, I used the `file` command on everything (`./*`). It showed me that file number 7 was the only plain text file.
-**Commands I used:**
-    cd inhere/
-    file ./*
-    cat ./-file07
-**Password Found:** `6C7h9GD8M6ai5nr7wo1RonrzFjj9yIrG`
-
-### Level 5 -> Level 6: Using Advanced Filtering
-* **Goal:** Find a specific file hidden deep inside many folders that is exactly 1033 bytes big and not executable.
-* **What I did:** I used the `find` command with flags to search for files (`-type f`), specific sizes (`-size 1033c`), and left out executable choices (`! -executable`).
-* **Commands I used:**
-    ```bash
-    find . -type f -size 1033c ! -executable
-    cat ./maybehere07/.file2
-    ```
-* **Password Found:** `pXa26xhMWaC2SvDotA4r9EgZkulOeSBW`
+### Level 5 -> Level 10: System-Wide Searching and Text Filtering
+* **What I did:** Used the `find` engine to track item footprints via exact metrics. Hid terminal errors (`2>/dev/null`), parsed out text words among chaotic lines (`grep`), and dropped repeating duplicates (`sort | uniq -u`).
+* **Passwords Tracker:**
+  * Level 6: `pXa26xhMWaC2SvDotA4r9EgZkulOeSBW`
+  * Level 7: `Bmnnvf82KzQlfxgAI2d1zYbr1u9pr3E3`
+  * Level 8: `VR1ljMayciFxbnUokuQmJFw6QC9VKtub`
+  * Level 9: `EjmOSvuAu7sGAHqHVcBDPirRe9T03kxl`
+  * Level 10: `B0s2khmbT9u0geKuOoVGW3JZKhndE3BG`
 
 ---
 
-### Level 6 -> Level 7: Searching the Entire System
-* **Goal:** Find a file belonging to user `bandit7` and group `bandit6` that is exactly 33 bytes big.
-* **What I did:** I searched from the absolute root directory (`/`). I added `2>/dev/null` at the end of my command to hide all the "Permission Denied" errors, leaving only the successful file match on my screen.
-* **Commands I used:**
-    ```bash
-    find / -user bandit7 -group bandit6 -size 33c 2>/dev/null
-    cat /var/lib/dpkg/info/bandit7.password
-    ```
-* **Password Found:** `Bmnnvf82KzQlfxgAI2d1zYbr1u9pr3E3`
-
----
-
-### Level 7 -> Level 8: Finding a Word in a Sea of Text
-* **Goal:** Extract the password inside a huge text file called `data.txt` right next to the word "millionth".
-* **What I did:** Instead of scrolling through thousands of lines, I used `grep` to scan the file and pull out only the line containing "millionth".
-* **Commands I used:**
-    ```bash
-    grep "millionth" data.txt
-    ```
-* **Password Found:** `VR1ljMayciFxbnUokuQmJFw6QC9VKtub`
-
----
-
-### Level 8 -> Level 9: Sorting and Dropping Duplicates
-* **Goal:** Find the only line of text in `data.txt` that occurs exactly once. All other lines are duplicates.
-* **What I did:** The `uniq` command only works if identical lines are touching. So, I first used `sort` to line up all duplicate text rows together, and then piped (`|`) that text into `uniq -u` to delete all repeating data.
-* **Commands I used:**
-    ```bash
-    sort data.txt | uniq -u
-    ```
-* **Password Found:** `EjmOSvuAu7sGAHqHVcBDPirRe9T03kxl`
-
----
-
-### Level 9 -> Level 10: Extracting Readable Strings
-* **Goal:** Read a password hidden inside a corrupted, unreadable binary file.
-* **What I did:** Running `cat` on a binary file floods the screen with broken symbols. I used the `strings` tool to extract only the human-readable text parts, then used `grep` to look for the password lines starting with multiple `=` marks.
-* **Commands I used:**
-    ```bash
-    strings data.txt | grep "===="
-
-    ### Level 10 -> Level 11: Decoding Base64
+### Level 10 -> Level 11: Decoding Base64
 * **Goal:** Extract clear text from a file encoded in Base64 layout.
 * **What I did:** Ran the base64 reverse program to unpack the file content back into normal characters.
 * **Commands I used:**
@@ -133,7 +63,7 @@ In cybersecurity, most servers do not have a visual desktop. You have to type co
 * **What I did:** Used the character translation filter `tr` to map lowercase and uppercase strings backward by 13 positions.
 * **Commands I used:**
     ```bash
-    cat data.txt | tr "A-Za-z" "N-ZA-Mn-za-n"
+    cat data.txt | tr "A-Za-z" "N-ZA-Mn-za-m"
     ```
 * **Password Found:** `GROozWPO8QyN0mGrjUkID0WCYkZiQxrN`
 
@@ -141,10 +71,10 @@ In cybersecurity, most servers do not have a visual desktop. You have to type co
 
 ### Level 12 -> Level 13: Processing Nested Compressed Files
 * **Goal:** Uncover a secret hidden inside a binary file packed inside multiple layers of different compression tools.
-* **What I did:** Created a temporary workspace in `/tmp`. Converted the hex file back to a raw binary file using `xxd -r`. Kept testing file types via `file` and peeled back layers sequentially using `gunzip`, `bunzip2`, and `tar -xf`.
+* **What I did:** Created a temporary workspace in `/tmp/work`. Converted the hex file back to a raw binary file using `xxd -r`. Kept testing file types via `file` and peeled back layers sequentially using `gunzip`, `bunzip2`, and `tar -xf`.
 * **Commands I used:**
     ```bash
-    xxd -r data.txt data
+    xxd -r data.txt > data
     file data
     mv data data.gz && gunzip data.gz
     mv data data.bz2 && bunzip2 data.bz2
@@ -159,7 +89,7 @@ In cybersecurity, most servers do not have a visual desktop. You have to type co
 * **What I did:** Discovered a private SSH key file inside the directory. Securely moved it onto my home machine using `scp`, restricted its read access rules via `chmod 600`, and initialized an identity-linked connection loop.
 * **Commands I used:**
     ```bash
-    scp -P 2220 bandit13@bandit.labs.overthewire.org:~/sshkey.private ~/
+    scp -P 2220 bandit13@bandit.labs.overthewire.org:~/sshkey.private .
     chmod 600 sshkey.private
     ssh -i sshkey.private bandit14@bandit.labs.overthewire.org -p 2220
     ```
@@ -180,7 +110,7 @@ In cybersecurity, most servers do not have a visual desktop. You have to type co
 
 ### Level 15 -> Level 16: Interacting with Encrypted SSL Services
 * **Goal:** Transmit a password over an encrypted connection port.
-* **What I did:** Netcat fails when connecting to encrypted lines. I used OpenSSL's socket module to handle the secure data exchange and submitted the verification token over port 30001.
+* **What I did:** Netcat fails when connecting to encrypted lines. I used OpenSSL's socket module to handle the secure data exchange and submitted the verification token over port 30001 with `-quiet` to clean up text output.
 * **Commands I used:**
     ```bash
     echo "pbLYuZtTg4MgaqfJx8jbA9gKKGqM68A7" | openssl s_client -connect localhost:30001 -quiet
@@ -191,15 +121,15 @@ In cybersecurity, most servers do not have a visual desktop. You have to type co
 
 ### Level 16 -> Level 17: Port Scanning & RSA Key Collection
 * **Goal:** Scan a range of hidden internal channels to find an encrypted authentication door.
-* **What I did:** Scanned the network using `nmap` across lines 31000-32000. Found port 31790 running an SSL line, sent my token to it, and printed out a raw OpenSSH Private Key. Saved it into a new local file called `sshkey16` and modified permissions.
+* **What I did:** Scanned the network using `nmap` across lines 31000-32000. Used the version detection flag `-sV` to discover that port 31790 was running an SSL line. Sent my token to it, printed out a raw OpenSSH Private Key, and saved it into a local key file.
 * **Commands I used:**
     ```bash
     nmap -p 31000-32000 localhost
+    nmap -p 31046,31518,31691,31790,31960 -sV localhost
     echo "kS0Hf0u5HiXFwKMKFqXvPdOTNGGa0X8V" | openssl s_client -connect localhost:31790 -quiet
-    nano sshkey16
     chmod 600 sshkey16
     ```
-* **Password Found:** An OpenSSH Private key to access Level 17.
+* **Password Found:** An OpenSSH Private key used to connect directly into Level 17.
 
 ---
 
@@ -219,7 +149,7 @@ In cybersecurity, most servers do not have a visual desktop. You have to type co
 * **What I did:** The account was running a custom script that closes the door right away. I appended the `"cat readme"` command at the very end of my terminal login request, which forced the server to process my command before the script kicked me out.
 * **Commands I used:**
     ```bash
-    ssh -i sshkey16 bandit18@bandit.labs.overthewire.org -p 2220 "cat readme"
+    ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat readme"
     ```
 * **Password Found:** `KpsOfPkcP7i1FlIExk2QEjyt6dw8dxZI`
 
@@ -234,7 +164,7 @@ In cybersecurity, most servers do not have a visual desktop. You have to type co
     ```
 * **Password Found:** `4pIjcunZ0fK2vmp3IwfG8Vf7VhxD6pOA`
 
-## Step-by-Step Walkthrough (Final Levels 20 -> 33)
+---
 
 ### Level 20 -> Level 21: Parallel Processing & Network Listeners
 * **Goal:** Submit a password token to a strict validation software using a network line.
@@ -264,7 +194,7 @@ In cybersecurity, most servers do not have a visual desktop. You have to type co
 
 ### Level 22 -> Level 23: Reversing Variable MD5 Hashes
 * **Goal:** Find a password text hidden inside a folder name generated randomly by a background script.
-* **What I did:** Audited an automated script file that converts usernames into hidden MD5 hash strings. Manually recreated that exact same hash command line using the target name `bandit23` to reveal the exact filename.
+* **What I did:** Audited an automated script file that converts usernames into hidden MD5 hash strings. Manually recreated that exact same hash command line using the target name `bandit23` to reveal the exact filename inside `/tmp`.
 * **Commands I used:**
     ```bash
     cat /usr/bin/cronjob_bandit23.sh
@@ -306,7 +236,7 @@ In cybersecurity, most servers do not have a visual desktop. You have to type co
 
 ### Level 25 -> Level 26: Intercepting Connection Keys
 * **Goal:** Download a secret access key file hosted on the target level.
-* **What I did:** Discovered a private configuration folder containing a login key named `bandit26.sshkey`. Used the secure copy protocol (`scp`) to extract it from the server and put it on my home machine, adjusted its usage permissions, and logged in.
+* **What I did:** Discovered a private configuration folder containing a login key named `bandit26.sshkey`. Used the secure copy protocol (`scp`) to extract it from the server and put it on my home machine, adjusted its usage privileges, and logged in.
 * **Commands I used:**
     ```bash
     scp -P 2220 bandit25@bandit.labs.overthewire.org:~/bandit26.sshkey .
@@ -441,5 +371,3 @@ In cybersecurity, most servers do not have a visual desktop. You have to type co
 | **Bandit 30**| Bandit 31| `82NkymblpGBYmIXG6ZQ8YldBYstHpfUf` |
 | **Bandit 31**| Bandit 32| `pWuj5jBQ6IgV0NXwiH6g1pXRF8S1YvbT` |
 | **Bandit 32**| Bandit 33| `u4P2CyPOwPGLe94RdD9Uo2FxFwvnFswM` |
-    ```
-* **Password Found:** `B0s2khmbT9u0geKuOoVGW3JZKhndE3BG`
