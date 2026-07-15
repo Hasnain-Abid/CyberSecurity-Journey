@@ -233,5 +233,213 @@ In cybersecurity, most servers do not have a visual desktop. You have to type co
     ./bandit20-do cat /etc/bandit_pass/bandit20
     ```
 * **Password Found:** `4pIjcunZ0fK2vmp3IwfG8Vf7VhxD6pOA`
+
+## Step-by-Step Walkthrough (Final Levels 20 -> 33)
+
+### Level 20 -> Level 21: Parallel Processing & Network Listeners
+* **Goal:** Submit a password token to a strict validation software using a network line.
+* **What I did:** The validation software required another port to give it the password first. I started a local network listener using Netcat (`nc -l -p`), used the ampersand symbol (`&`) to push it into the background so my screen didn't freeze, and then executed the connector tool.
+* **Commands I used:**
+    ```bash
+    echo "4pIjcunZ0fK2vmp3IwfG8Vf7VhxD6pOA" | nc -l -p 4444 &
+    ./suconnect 4444
+    ```
+* **Password Found:** `bW9kBv5WC3P4yoDyf12LSdGuNz5ka6hY`
+
+---
+
+### Level 21 -> Level 22: Investigating Automated Cron Jobs
+* **Goal:** Discover how the server runs automatic routines in the background to print out files.
+* **What I did:** Checked the system scheduler configuration directory (`/etc/cron.d/`). Found an active task sheet pointing to a hidden script file, read the code inside it, and located where it was outputting the next credential token.
+* **Commands I used:**
+    ```bash
+    cd /etc/cron.d/
+    cat cronjob_bandit22
+    cat /usr/bin/cronjob_bandit22.sh
+    cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+    ```
+* **Password Found:** `RYVux2rHEm9tiXHmLFzuR7Vhx6AZQMEz`
+
+---
+
+### Level 22 -> Level 23: Reversing Variable MD5 Hashes
+* **Goal:** Find a password text hidden inside a folder name generated randomly by a background script.
+* **What I did:** Audited an automated script file that converts usernames into hidden MD5 hash strings. Manually recreated that exact same hash command line using the target name `bandit23` to reveal the exact filename.
+* **Commands I used:**
+    ```bash
+    cat /usr/bin/cronjob_bandit23.sh
+    echo "I am user bandit23" | md5sum | cut -d ' ' -f 1
+    cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+    ```
+* **Password Found:** `gKXDTAXnIz3OBxiPjRZ2uqutUlPZrBsw`
+
+---
+
+### Level 23 -> Level 24: Exploiting Automated Script Execution Folders
+* **Goal:** Write a custom script that the server will automatically run with elevated privileges.
+* **What I did:** Discovered a routine task that automatically executes and deletes any script placed inside a special folder (`/var/spool/bandit24/foo`). Created a new workspace folder in `/tmp`, wrote a basic script to copy the target password out, gave it full entry privileges, and copied it into the task directory.
+* **Commands I used:**
+    ```bash
+    cat /usr/bin/cronjob_bandit24.sh
+    mkdir -p /tmp/nain_space
+    echo '#!/bin/bash' > /tmp/nain_space/get_pass.sh
+    echo 'cat /etc/bandit_pass/bandit24 > /tmp/nain_space/pass.txt' >> /tmp/nain_space/get_pass.sh
+    chmod +x /tmp/nain_space/get_pass.sh
+    cp /tmp/nain_space/get_pass.sh /var/spool/bandit24/foo/
+    cat /tmp/nain_space/pass.txt
+    ```
+* **Password Found:** `hVQMk3lJNsmQ7VF3ubyrNNBom7BOgVXv`
+
+---
+
+### Level 24 -> Level 25: Automated Network Brute-Forcing
+* **Goal:** Crack a network server lock requiring a password and a matching 4-digit PIN code.
+* **What I did:** Guessing 10,000 variations manually is impossible. I wrote a fast command-line `for` loop that instantly printed all options combined with the level password into a single test file (`brute.txt`). Piped the whole list into port 30002 and dropped wrong errors using `grep -v`.
+* **Commands I used:**
+    ```bash
+    for pin in {0000..9999}; do echo "hVQMk3lJNsmQ7VF3ubyrNNBom7BOgVXv $pin"; done > /tmp/nain_space/brute.txt
+    cat /tmp/nain_space/brute.txt | nc localhost 30002 | grep -v "Wrong"
+    ```
+* **Password Found:** `SoHfqMOEqIX2IYKVciZxvgpR9a2Djx4P`
+
+---
+
+### Level 25 -> Level 26: Intercepting Connection Keys
+* **Goal:** Download a secret access key file hosted on the target level.
+* **What I did:** Discovered a private configuration folder containing a login key named `bandit26.sshkey`. Used the secure copy protocol (`scp`) to extract it from the server and put it on my home machine, adjusted its usage permissions, and logged in.
+* **Commands I used:**
+    ```bash
+    scp -P 2220 bandit25@bandit.labs.overthewire.org:~/bandit26.sshkey .
+    chmod 600 bandit26.sshkey
+    ssh -i bandit26.sshkey bandit26@bandit.labs.overthewire.org -p 2220
+    ```
+* **Password Found:** Secure connection file `bandit26.sshkey` used to bypass standard password entry.
+
+---
+
+### Level 26 -> Level 27: Escaping Restrictive Shell Environments
+* **Goal:** Break out of a text shell that crashes your session instantly.
+* **What I did:** The bandit26 account used a restrictive script profile. I shrank my local terminal window size before logging in. This forced the text reader to freeze the interface into a `more` file reader. Hit `v` to open full text editing mode, typed `:set shell=/bin/bash`, and initialized a clean environment using `:shell`.
+* **Password Found:** Passed through system layout manipulation via a text reader.
+
+---
+
+### Level 27 -> Level 28: Investigating Git Repository Logs
+* **Goal:** Recover a credential password deleted from a production file directory.
+* **What I did:** Cloned the local development repository into a temporary space. Inspected the tracking logs using `git log` and printed out historical file changes using `git show` to view the deleted password entry.
+* **Commands I used:**
+    ```bash
+    mkdir -p /tmp/nain_git && cd /tmp/nain_git
+    git clone ssh://bandit27-git@bandit.labs.overthewire.org:2220/home/bandit27-git/repo
+    git log
+    git show 83d77407b76c9f86ac4e691a47618641c9d527ba
+    ```
+* **Password Found:** `Em7eGtqaMySwNFjCpwzzHhLhospOcdt0`
+
+---
+
+### Level 28 -> Level 29: Auditing Git Revision History Drops
+* **Goal:** Uncover data masked by fake placeholder symbols (`xxxxxxxxxx`).
+* **What I did:** Cloned the code database. Checked all previous modification logs and looked at the exact code difference to find the text string before it was replaced with placeholders.
+* **Commands I used:**
+    ```bash
+    git clone ssh://bandit28-git@bandit.labs.overthewire.org:2220/home/bandit28-git/repo
+    git log -p README.md
+    ```
+* **Password Found:** `y8Yd2ssKcpHpud7UvOSOxwamRMzIGIeQ`
+
+---
+
+### Level 29 -> Level 30: Hunting Across Alternative Git Branches
+* **Goal:** Extract a password hidden inside a different branch of the development project.
+* **What I did:** Main master branch contained an info leak notice. I searched for all hidden development branches using `git branch -a`, found a branch named `dev`, switched my workspace over to it, and read the file.
+* **Commands I used:**
+    ```bash
+    git clone ssh://bandit29-git@bandit.labs.overthewire.org:2220/home/bandit29-git/repo
+    git branch -a
+    git checkout dev
+    cat README.md
+    ```
+* **Password Found:** `jq9Dfg2rXsfYsWMgFuKlXhphjdH7USgX`
+
+---
+
+### Level 30 -> Level 31: Extracting Hidden Git Tags
+* **Goal:** Find production keys hidden somewhere inside an empty project directory.
+* **What I did:** The branch appeared to have no files. I checked the internal deployment tags using `git tag`. Discovered a tag named `secret` and extracted its details using the show command.
+* **Commands I used:**
+    ```bash
+    git clone ssh://bandit30-git@bandit.labs.overthewire.org:2220/home/bandit30-git/repo
+    git tag
+    git show secret
+    ```
+* **Password Found:** `82NkymblpGBYmIXG6ZQ8YldBYstHpfUf`
+
+---
+
+### Level 31 -> Level 32: Submitting Validated Remote Repository Commits
+* **Goal:** Push a newly created validation text file back up to the server repository.
+* **What I did:** Cloned the level 31 project. Created a new text file named `key.txt` filled with the exact string requested, staged the file addition into Git, committed it locally, and pushed it to the remote server to trigger the validation code.
+* **Commands I used:**
+    ```bash
+    git clone ssh://bandit31-git@bandit.labs.overthewire.org:2220/home/bandit31-git/repo
+    echo 'May I come in?' > key.txt
+    git add -f key.txt
+    git commit -m "Adding the requested key file"
+    git push origin master
+    ```
+* **Password Found:** `pWuj5jBQ6IgV0NXwiH6g1pXRF8S1YvbT`
+
+---
+
+### Level 32 -> Level 33: Bypassing Uppercase Command Shell Filters
+* **Goal:** Escape a custom system shell that converts all your characters to capitals.
+* **What I did:** Any command I typed was shifted into uppercase letters, breaking standard commands. I invoked a built-in positional variable statement (`$0`) which refers to the original execution engine. This bypassed the filter and dropped me into a standard bash environment.
+* **Commands I used:**
+    ```bash
+    $0
+    cat /etc/bandit_pass/bandit33
+    ```
+* **Password Found:** `u4P2CyPOwPGLe94RdD9Uo2FxFwvnFswM` (Final Victory Flag!)
+
+---
+
+## Complete Credential Matrix (Levels 0 to 33)
+
+| From Level | To Level | Password Token / Flag |
+| :--- | :--- | :--- |
+| **Bandit 0** | Bandit 1 | `6y2kwnwK6grgvwvpvLaa2T1cpFEKOhNR` |
+| **Bandit 1** | Bandit 2 | `PK8fYLZg2hnHSz83plBL1iEPKdD3QToB` |
+| **Bandit 2** | Bandit 3 | `7ZZ2LFrykP2zEyvBl4m3clcL7tGYJPME` |
+| **Bandit 3** | Bandit 4 | `xzTXq1rDJQVVAzdv5cHq1TQytTWufAMq` |
+| **Bandit 4** | Bandit 5 | `6C7h9GD8M6ai5nr7wo1RonrzFjj9yIrG` |
+| **Bandit 5** | Bandit 6 | `pXa26xhMWaC2SvDotA4r9EgZkulOeSBW` |
+| **Bandit 6** | Bandit 7 | `Bmnnvf82KzQlfxgAI2d1zYbr1u9pr3E3` |
+| **Bandit 7** | Bandit 8 | `VR1ljMayciFxbnUokuQmJFw6QC9VKtub` |
+| **Bandit 8** | Bandit 9 | `EjmOSvuAu7sGAHqHVcBDPirRe9T03kxl` |
+| **Bandit 9** | Bandit 10| `B0s2khmbT9u0geKuOoVGW3JZKhndE3BG` |
+| **Bandit 10**| Bandit 11| `pYfOY6HwUsDj5rL9UvyhU7MCmv8vN5Ro` |
+| **Bandit 11**| Bandit 12| `GROozWPO8QyN0mGrjUkID0WCYkZiQxrN` |
+| **Bandit 12**| Bandit 13| `qQYQiHOBPR8zR61qxYqX45quvihF2uzk` |
+| **Bandit 13**| Bandit 14| `aaWecNkG4FhxJQxz07uiwzVP6bJiYS65` |
+| **Bandit 14**| Bandit 15| `pbLYuZtTg4MgaqfJx8jbA9gKKGqM68A7` |
+| **Bandit 15**| Bandit 16| `kS0Hf0u5HiXFwKMKFqXvPdOTNGGa0X8V` |
+| **Bandit 16**| Bandit 17| (OpenSSH Private RSA Connection Key) |
+| **Bandit 17**| Bandit 18| `OQxXZjELndr90zuhOTDYBEomI0SZITXI` |
+| **Bandit 18**| Bandit 19| `KpsOfPkcP7i1FlIExk2QEjyt6dw8dxZI` |
+| **Bandit 19**| Bandit 20| `4pIjcunZ0fK2vmp3IwfG8Vf7VhxD6pOA` |
+| **Bandit 20**| Bandit 21| `bW9kBv5WC3P4yoDyf12LSdGuNz5ka6hY` |
+| **Bandit 21**| Bandit 22| `RYVux2rHEm9tiXHmLFzuR7Vhx6AZQMEz` |
+| **Bandit 22**| Bandit 23| `gKXDTAXnIz3OBxiPjRZ2uqutUlPZrBsw` |
+| **Bandit 23**| Bandit 24| `hVQMk3lJNsmQ7VF3ubyrNNBom7BOgVXv` |
+| **Bandit 24**| Bandit 25| `SoHfqMOEqIX2IYKVciZxvgpR9a2Djx4P` |
+| **Bandit 25**| Bandit 26| (OpenSSH Private Key for bandit26) |
+| **Bandit 26**| Bandit 27| `STJLJBRRphMxKB392CT4iOr5CbzPU9ER` |
+| **Bandit 27**| Bandit 28| `y8Yd2ssKcpHpud7UvOSOxwamRMzIGIeQ` |
+| **Bandit 28**| Bandit 29| `x2g9snNhZ18761A6b1wzwvG7VPhxD6pO` |
+| **Bandit 29**| Bandit 30| `jq9Dfg2rXsfYsWMgFuKlXhphjdH7USgX` |
+| **Bandit 30**| Bandit 31| `82NkymblpGBYmIXG6ZQ8YldBYstHpfUf` |
+| **Bandit 31**| Bandit 32| `pWuj5jBQ6IgV0NXwiH6g1pXRF8S1YvbT` |
+| **Bandit 32**| Bandit 33| `u4P2CyPOwPGLe94RdD9Uo2FxFwvnFswM` |
     ```
 * **Password Found:** `B0s2khmbT9u0geKuOoVGW3JZKhndE3BG`
